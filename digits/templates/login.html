@@ -19,6 +19,11 @@
                 <label for="username">Username</label>
                 <span name="username_explanation" class="explanation-tooltip glyphicon glyphicon-question-sign" data-container="body" title="Must begin with a letter and contain only lowercase letters, numbers, periods, dashes and underscores."></span>
                 <input class="form-control" id="username" name="username" autofocus />
+                <input name="next" type="hidden" value="{{ next }}" />
+                <label for="username">Password</label>
+                <span name="password_explanation" class="explanation-tooltip glyphicon glyphicon-question-sign" data-container="body" title="Must begin with a letter and contain only lowercase letters, numbers, periods, dashes and underscores."></span>
+                <input class="form-control" id="password" name="password" autofocus />
+
             </div>
             <input type="submit" name="login-button" class="btn btn-primary" value='Submit' />
         </form>

@@ -43,6 +43,8 @@ def request_wants_json():
 
 def get_request_arg(key):
     value = None
+    print(flask.request.args)
+    print(flask.request.form)
     if key in flask.request.args:
         value = flask.request.args[key]
     elif key in flask.request.form:

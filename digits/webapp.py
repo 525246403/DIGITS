@@ -13,7 +13,7 @@ from digits import utils  # noqa
 from digits.utils import filesystem as fs  # noqa
 from digits.utils.store import StoreCache  # noqa
 import digits.scheduler  # noqa
-
+from flask import session
 # Create Flask, Scheduler and SocketIO objects
 
 url_prefix = config_value('url_prefix')
@@ -30,6 +30,7 @@ app.config['store_cache'] = StoreCache()
 app.config['store_url_list'] = config_value('model_store')['url_list']
 scheduler = digits.scheduler.Scheduler(config_value('gpu_list'), True)
 
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600*3600
 # Register filters and views
 
 app.jinja_env.globals['server_name'] = config_value('server_name')

@@ -7,6 +7,7 @@ import sys
 
 # Update PATH to include the local DIGITS directory
 PARENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(PARENT_DIR)
 found_parent_dir = False
 for p in sys.path:
     if os.path.abspath(p) == PARENT_DIR:
@@ -21,7 +22,7 @@ def main():
     parser.add_argument(
         '-p', '--port',
         type=int,
-        default=5000,
+        default=8080,
         help='Port to run app on (default 5000)'
     )
     parser.add_argument(

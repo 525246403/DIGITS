@@ -17,7 +17,7 @@ import digits
 from digits import dataset, extensions, model, utils, pretrained_model
 from digits.log import logger
 from digits.utils.routing import request_wants_json
-
+from flask import session
 blueprint = flask.Blueprint(__name__, __name__)
 
 
@@ -327,6 +327,7 @@ def login():
     Sets a cookie
     """
     # Get the URL to redirect to after logging in
+    user_dict = {'tzk123':'t123','xj123':'x123','dh123':'d123','jw123':'j123','yzg123':'y123'}
     next_url = utils.routing.get_request_arg('next') or \
         flask.request.referrer or flask.url_for('.home')
 
@@ -335,14 +336,26 @@ def login():
 
     # Validate username
     username = utils.routing.get_request_arg('username').strip()
+    password = utils.routing.get_request_arg('password').strip()
     try:
         utils.auth.validate_username(username)
+        utils.auth.validate_password(password)
     except ValueError as e:
         # Invalid username
         flask.flash(e.message, 'danger')
         return flask.render_template('login.html', next=next_url)
+    else:
+        if not user_dict.get(username):
+            flask.flash('username is wrong', 'danger')
+            return flask.render_template('login.html', next=next_url)
+        else:
+            if user_dict.get(username)!=password:
+                flask.flash('password is wrong', 'danger')
+                return flask.render_template('login.html', next=next_url)
 
     # Valid username
+    session['username'] = username
+    session['password'] = password
     response = flask.make_response(flask.redirect(next_url))
     response.set_cookie('username', username)
     return response
