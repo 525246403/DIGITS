@@ -22,7 +22,9 @@ from digits.utils import filesystem as fs
 from digits.utils.forms import fill_form_if_cloned, save_form_to_job
 from digits.utils.routing import request_wants_json, job_from_request
 from digits.webapp import scheduler
-
+from flask import request, jsonify
+from digits.arg_parser import *
+from digits.run_cmd import *
 blueprint = flask.Blueprint(__name__, __name__)
 
 """
@@ -75,7 +77,6 @@ def new():
 
     # Is there a request to clone a job with ?clone=<job_id>
     fill_form_if_cloned(form)
-
     return flask.render_template('models/images/classification/new.html',
                                  form=form,
                                  frameworks=frameworks.get_frameworks(),
@@ -84,6 +85,31 @@ def new():
                                  pretrained_networks_fullinfo=get_pretrained_networks_fulldetails(),
                                  multi_gpu=config_value('caffe')['multi_gpu'],
                                  )
+@blueprint.route('/getparse', methods=['GET','POST'])
+def getparse():
+    if request.method == 'POST':
+        data = request.json
+        server_file = data.get('server_file')
+        work_dir = data.get('work_dir')
+
+
+        if not server_file:
+            return jsonify({"ret": 2, "val": '', "error": "no server file"})
+        if not work_dir:
+            return jsonify({"ret": 2, "val": '', "error": "no work folder"})
+	server_file = "python " + server_file + " -h"
+	parser = ArgParser()
+ 	print(server_file)
+        result = run_cmd(work_dir, server_file, process_output=parser, name='jobdir')
+	print(result)
+	parser.verbose()
+        resu_dict = {}
+	pos = parser.get_args('pos')
+        opt = parser.get_args('opt')
+        resu_dict['pos'] = pos
+	resu_dict['opt'] = opt
+	print(resu_dict)
+        return jsonify({"ret": 0, "val": resu_dict, "error": "OK"})
 
 
 @blueprint.route('/json', methods=['POST'])

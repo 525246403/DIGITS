@@ -67,21 +67,35 @@ def home(tab=2):
             },
         }
 
-        new_model_options = {
+	new_model_options = {
             'Images': {
-                'image-classification': {
-                    'title': 'Classification',
+                'image-caffe': {
+                    'title': 'Caffe',
+                    'url': flask.url_for(
+                        'digits.model.images.classification.views.new'),
+                },
+                'image-tensorflow': {
+                    'title': 'tensorflow',
+                    'url': flask.url_for(
+                        'digits.model.images.classification.views.new'),
+                },
+                'image-pytorch': {
+                    'title': 'Pytorch',
+                    'url': flask.url_for(
+                        'digits.model.images.classification.views.new'),
+                },
+                'image-mxnet': {
+                    'title': 'Mxnet',
                     'url': flask.url_for(
                         'digits.model.images.classification.views.new'),
                 },
                 'image-other': {
                     'title': 'Other',
                     'url': flask.url_for(
-                        'digits.model.images.generic.views.new'),
+                        'digits.model.images.classification.views.new'),
                 },
             },
         }
-
         load_model_options = {
             'Images': {
                 'pretrained-model': {
@@ -99,29 +113,29 @@ def home(tab=2):
         }
 
         # add dataset options for known dataset extensions
-        data_extensions = extensions.data.get_extensions()
-        for extension in data_extensions:
-            ext_category = extension.get_category()
-            ext_title = extension.get_title()
-            ext_title = ext_title[:21] + ' ..' if len(ext_title) > 21 else ext_title
-            ext_id = extension.get_id()
-            if ext_category not in new_dataset_options:
-                new_dataset_options[ext_category] = {}
-            new_dataset_options[ext_category][ext_id] = {
-                'title': ext_title,
-                'url': flask.url_for(
-                    'digits.dataset.generic.views.new',
-                    extension_id=ext_id),
-            }
-            if ext_category not in new_model_options:
-                new_model_options[ext_category] = {}
-            new_model_options[ext_category][ext_id] = {
-                'title': ext_title,
-                'url': flask.url_for(
-                    'digits.model.images.generic.views.new',
-                    extension_id=ext_id),
-            }
-
+       # data_extensions = extensions.data.get_extensions()
+	#print(data_extensions)
+        #for extension in data_extensions:
+         #   ext_category = extension.get_category()
+          #  ext_title = extension.get_title()
+           # ext_title = ext_title[:21] + ' ..' if len(ext_title) > 21 else ext_title
+            #ext_id = extension.get_id()
+            #if ext_category not in new_dataset_options:
+             #   new_dataset_options[ext_category] = {}
+            #new_dataset_options[ext_category][ext_id] = {
+             #   'title': ext_title,
+              #  'url': flask.url_for(
+               #     'digits.dataset.generic.views.new',
+                #    extension_id=ext_id),
+            #}
+           # if ext_category not in new_model_options:
+          #      new_model_options[ext_category] = {}
+           # new_model_options[ext_category][ext_id] = {
+            #    'title': ext_title,
+             #   'url': flask.url_for(
+              #      'digits.model.images.generic.views.new',
+               #     extension_id=ext_id),
+            #}
         return flask.render_template(
             'home.html',
             tab=tab,

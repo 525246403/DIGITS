@@ -208,32 +208,12 @@
         <div class="row">
             <div class="col-md-12">
                 <ul class="nav nav-tabs" role="tablist">
-                    <li ng-class="{active:tab.isSet(1)}">
-                        <a href ng-click="tab.setTab(1, $event)">
-                            <h4>
-                                Datasets
-                                <small>
-                                    ({[jc.dataset_jobs.length]})
-                                </small>
-                            </h4>
-                        </a>
-                    </li>
                     <li ng-class="{active:tab.isSet(2)}">
                         <a href ng-click="tab.setTab(2, $event)">
                             <h4>
                                 Models
                                 <small>
                                     ({[jc.model_jobs.length]})
-                                </small>
-                            </h4>
-                        </a>
-                    </li>
-                    <li ng-class="{active:tab.isSet(3)}" id="pretrainedModelTab">
-                        <a href ng-click="tab.setTab(3, $event)">
-                            <h4>
-                                Pretrained Models
-                                <small>
-                                    ({[jc.pretrained_model_jobs.length]})
                                 </small>
                             </h4>
                         </a>

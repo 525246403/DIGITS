@@ -94,12 +94,17 @@ class ModelForm(Form):
         tooltip="Choose a Python file on the server containing layer definitions."
     )
 
+    python_layer_work_file = utils.forms.StringField(
+        'Work-side file',
+        validators=[
+            validate_file_exists,
+            validate_py_ext
+        ],
+        tooltip="Choose a workdir ."
+    )
+
     train_epochs = utils.forms.IntegerField(
         'Training epochs',
-        validators=[
-            validators.NumberRange(min=1)
-        ],
-        default=30,
         tooltip="How many passes through the training data?"
     )
 
