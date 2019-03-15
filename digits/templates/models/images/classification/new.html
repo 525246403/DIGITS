@@ -26,7 +26,7 @@ function syncAceEditor(){
 }
 </script>
 
-<form  id="model-form" action="{{url_for('digits.model.images.classification.views.create')}}" enctype="multipart/form-data" method="post">
+<!--<form  id="model-form" enctype="multipart/form-data" method="post">-->
     {{ form.hidden_tag() }}
 
     {{ print_errors(form) }}
@@ -80,7 +80,7 @@ function syncAceEditor(){
         });
         python_layer_file_state();
 
-$("#dataset").change(function() {
+        $("#dataset").change(function() {
     if ($(this).val()) {
         $.ajax("{{url_for('digits.dataset.views.summary')}}" + "?job_id=" + $(this).val(),
             {
@@ -96,7 +96,7 @@ $("#dataset").change(function() {
             });
         }
     });
-$("#dataset").change();
+        $("#dataset").change();
         </script>
 
         <div class="col-sm-6">
@@ -107,14 +107,14 @@ $("#dataset").change();
 		<div class="form-group">
    		 <label for="framework">Framework</label>
     		<span name="framework_explanation" class="explanation-tooltip glyphicon glyphicon-question-sign" data-container="body" title="" data-original-title="An optional framework."></span>
-		<select class="form-control">
-		  <option value="caffe">Caffe</option><option value="tensorflow">Tensorflow</option><option value="mxnet">Mxnet</option><option value="pytorch">pytorch</option><option value="other">Other</option>
+		<select class="form-control" id="framework-control">
+		  <option value="caffe">Caffe</option><option value="tensorflow" selected = "selected">Tensorflow</option><option value="mxnet">Mxnet</option><option value="pytorch">pytorch</option><option value="other">Other</option>
 		</select>
 		</div>
 		<div class="form-group">
    		 <label for="environment path">Enviroment Path</label>
     		<span name="enviroment_path_explanation" class="explanation-tooltip glyphicon glyphicon-question-sign" data-container="body" title="" data-original-title="An optional enviroment path."></span>
-		<textarea class="form-control" rows='5' cols='10'>
+		<textarea class="form-control" rows='5' cols='10' id="enviroment_path">
 		</textarea>
 		</div>
 
@@ -129,9 +129,12 @@ $("#dataset").change();
     		<input class="form-control" id="model_name" name="model_name" type="text" value="">
 		</div>
             </div></div>
-    </div></form>
+    </div>
+<!--</form>-->
                 <script>
-            function input_file() {
+                var pos_arry = new Array();
+                var opt_arry = new Array();
+                function input_file() {
                 var server_file = $('#python_layer_server_file').val();
                 var work_dir = $('#python_layer_work_file').val();
                 data = {"server_file":server_file,"work_dir":work_dir}
@@ -141,47 +144,84 @@ $("#dataset").change();
                     data: JSON.stringify(data),
                     contentType: "application/json",
                     success:function(resp){
-			var add_args = document.getElementById('args');
-			var nodeFather = add_args.parentNode; 
+			        var add_args = document.getElementById('args');
+			        var nodeFather = add_args.parentNode;
                         if (resp.ret==0){
                         var result = resp.val;
-			var opt = result['opt']
-			var pos = result['pos']
-			if (pos.length!=0){
-				for(var i=0;i<pos.length;i++){
-					var node_clone = add_args.cloneNode();
-
-					var name = pos[i].name.split('--')[1];
-					var help = pos[i].help;
-					console.log(name)
-				content = '<div class="form-group"><label for="' + name + '"><span>**</span>' + name + '</label><span name="' + name +'_explanation" class="explanation-tooltip glyphicon glyphicon-question-sign" data-container="body" title="" data-original-title="' +help+'"></span><input class="form-control" id="' + name +'" name="'+ name +'" type="text" value=""></div>'	
-				node_clone.innerHTML = content;
-				node_clone.removeAttribute('id');;
-				nodeFather.appendChild(node_clone);
-				}
-			}else{};
-			if (opt.length!=0){
-			for(var i=0;i<opt.length;i++){
-			var node_clone = add_args.cloneNode();
-			var name = opt[i].name.split('--')[1];
-			var help = opt[i].help;
-			console.log(name)
-			content = '<div class="form-group"><label for="' + name + '">' + name + '</label><span name="' + name +'_explanation" class="explanation-tooltip glyphicon glyphicon-question-sign" data-container="body" title="" data-original-title="' +help+'"></span><input class="form-control" id="' + name +'" name="'+ name +'" type="text" value=""></div>'	
-			node_clone.innerHTML = content;
-			node_clone.removeAttribute('id');;
-			nodeFather.appendChild(node_clone);
-			}
-			}else{};
-			var node_clone = add_args.cloneNode();
-			content = '<div class="forms-group" id="args"><div style="padding-bottom:10px"><button style="background-color: green;width: 200px;color: white;border: none;box-shadow: -1px -2px -2px 0px #615959;border-radius: 7px;font-size: 23px">Execut</button></div><div><button style="background-color: green;width: 200px;color: white;border: none;box-shadow: -1px -2px -2px 0px #615959;border-radius: 7px;font-size: 23px">Immediate Execut</button></div></div>'
-			node_clone.innerHTML = content;
-			node_clone.removeAttribute('id');
-			nodeFather.appendChild(node_clone);
-			}else {};
-			$(".explanation-tooltip").tooltip();
+			            var opt = result['opt']
+			            var pos = result['pos']
+			            if (pos.length!=0){
+				        for(var i=0;i<pos.length;i++){
+					    var node_clone = add_args.cloneNode();
+                        var name = pos[i].name.split('--')[1];
+                        pos_arry.push(name);
+                        var help = pos[i].help;
+                    content = '<div class="form-group"><label for="' + name + '"><span>**</span>' + name + '</label><span name="' + name +'_explanation" class="explanation-tooltip glyphicon glyphicon-question-sign" data-container="body" title="" data-original-title="' +help+'"></span><input class="form-control" id="' + name +'" name="'+ name +'" type="text" value=""></div>'
+                    node_clone.innerHTML = content;
+                    node_clone.removeAttribute('id');;
+                    nodeFather.appendChild(node_clone);
                     }
-                })
-            }
+                }else{};
+                if (opt.length!=0){
+                for(var i=0;i<opt.length;i++){
+                var node_clone = add_args.cloneNode();
+                var name = opt[i].name.split('--')[1];
+                opt_arry.push(name);
+                var help = opt[i].help;
+                content = '<div class="form-group"><label for="' + name + '">' + name + '</label><span name="' + name +'_explanation" class="explanation-tooltip glyphicon glyphicon-question-sign" data-container="body" title="" data-original-title="' +help+'"></span><input class="form-control" id="' + name +'" name="'+ name +'" type="text" value=""></div>'
+                node_clone.innerHTML = content;
+                node_clone.removeAttribute('id');;
+                nodeFather.appendChild(node_clone);
+                }
+                }else{};
+                var node_clone = add_args.cloneNode();
+                content = '<div class="forms-group" id="args"><div style="padding-bottom:10px"><button style="background-color: green;width: 200px;color: white;border: none;box-shadow: -1px -2px -2px 0px #615959;border-radius: 7px;font-size: 23px" onclick=execute()>Execute</button></div><div><button style="background-color: green;width: 200px;color: white;border: none;box-shadow: -1px -2px -2px 0px #615959;border-radius: 7px;font-size: 23px" id="ImmediateExecute">Immediate Execute</button></div></div>'
+                node_clone.innerHTML = content;
+                node_clone.removeAttribute('id');
+                nodeFather.appendChild(node_clone);
+                }else {};
+                $(".explanation-tooltip").tooltip();
+                        }
+                    })
+                };
+                console.log(pos_arry);
+                console.log(opt_arry);
+                function execute() {
+                    var form_data = new Object();
+                    form_data['python_layer_server_file'] = $('#python_layer_server_file').val();
+                    form_data['python_layer_work_file'] = $('#python_layer_work_file').val();
+                    form_data['framework'] = $('#framework-control option:selected').val();
+                    form_data['enviroment_path'] = $('#enviroment_path').val();
+                    form_data['group_name'] = $('#group_name').val();
+                    form_data['model_name'] = $('#model_name').val();
+                    var pos_data = new Object();
+                    for(var i=0; i<pos_arry.length;i++){
+                        name = pos_arry[i];
+		console.log(name)
+                        pos_data[name] = $('#'+ name).val();
+                    };console.log(pos_data)
+                    form_data['pos_data'] = pos_data;
+                    var opt_data = new Object();
+                    for(var i=0; i<opt_arry.length;i++){
+                        name = opt_arry[i];
+                        opt_data[name] = $('#'+ name).val();
+                    };
+                    form_data['opt_data'] = opt_data;
+                    console.log(form_data)
+                    $.ajax({
+                    type: "post",
+                    url: "/models/images/classification/getnewpage" ,
+                    data: JSON.stringify(form_data),
+                    contentType: "application/json",
+                    success:function(resp){
+                        if (resp.ret != 0){
+                            console.log(resp.error)
+                        alert(resp.val)
+                    } else {
+                        alert(resp.error);
+                    }}
+                })};
+
 
 
                 </script>

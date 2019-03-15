@@ -67,44 +67,47 @@ class ModelForm(Form):
     # Fields
 
     # The options for this get set in the view (since they are dynamic)
-    dataset = utils.forms.SelectField(
-        'Select Dataset',
-        choices=[],
-        tooltip="Choose the dataset to use for this model."
-    )
+    # dataset = utils.forms.SelectField(
+    #     'Select Dataset',
+    #     choices=[],
+    #     tooltip="Choose the dataset to use for this model."
+    # )
 
     python_layer_from_client = utils.forms.BooleanField(
-        u'Use client-side file',
+        'Use client-side file',
         default=False,
     )
 
     python_layer_client_file = utils.forms.FileField(
-        u'Client-side file',
+        'Client-side file',
         validators=[
             validate_py_ext
         ],
         tooltip="Choose a Python file on the client containing layer definitions."
     )
     python_layer_server_file = utils.forms.StringField(
-        u'Server-side file',
+        'Server-side file',
         validators=[
             validate_file_exists,
             validate_py_ext
         ],
         tooltip="Choose a Python file on the server containing layer definitions."
     )
-
     python_layer_work_file = utils.forms.StringField(
         'Work-side file',
-        validators=[
-            validate_file_exists,
-            validate_py_ext
-        ],
+        # validators=[
+        #     validate_file_exists,
+        #     validate_py_ext
+        # ],
         tooltip="Choose a workdir ."
     )
 
     train_epochs = utils.forms.IntegerField(
         'Training epochs',
+        validators=[
+            validators.NumberRange(min=1)
+        ],
+        default=30,
         tooltip="How many passes through the training data?"
     )
 
@@ -144,16 +147,14 @@ class ModelForm(Form):
         tooltip=('If you provide a random seed, then back-to-back runs with '
                  'the same model and dataset should give identical results.')
     )
-
     batch_size = utils.forms.MultiIntegerField(
         'Batch size',
-        validators=[
-            utils.forms.MultiNumberRange(min=1),
-            utils.forms.MultiOptional(),
-        ],
+        # validators=[
+        #     utils.forms.MultiNumberRange(min=1),
+        #     utils.forms.MultiOptional(),
+        # ],
         tooltip="How many images to process at once. If blank, values are used from the network definition."
     )
-
     batch_accumulation = utils.forms.IntegerField(
         'Batch Accumulation',
         validators=[
@@ -253,7 +254,7 @@ class ModelForm(Form):
     # Use a SelectField instead of a HiddenField so that the default value
     # is used when nothing is provided (through the REST API)
     method = wtforms.SelectField(
-        u'Network type',
+        'Network type',
         choices=[
             ('standard', 'Standard network'),
             ('previous', 'Previous network'),
@@ -278,9 +279,9 @@ class ModelForm(Form):
     # The options for this get set in the view (since they are dependent on the data type)
     standard_networks = wtforms.RadioField(
         'Standard Networks',
-        validators=[
-            validate_required_iff(method='standard'),
-        ],
+        # validators=[
+        #     validate_required_iff(method='standard'),
+        # ],
     )
 
     previous_networks = wtforms.RadioField(
